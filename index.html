@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ゲームセーブコード保存サイト</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(100% - 22px); /* Input width minus padding and border */
+}
+
+.btn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 8px;
+    margin-top: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li button {
+    padding: 5px 10px;
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+li button:hover {
+    background-color: #d32f2f;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ゲームセーブコード保存</h1>
+        <input type="text" id="saveCode" placeholder="セーブコードを入力">
+        <button onclick="addCode()" class="btn">追加</button>
+        <ul id="codeList"></ul>
+    </div>
+
+    <script>
+function getSavedCodes() {
+    var codes = localStorage.getItem('gameSaveCodes');
+    return codes ? JSON.parse(codes) : [];
+}
+
+function saveCodes(codes) {
+    localStorage.setItem('gameSaveCodes', JSON.stringify(codes));
+}
+
+function addCode() {
+    var code = document.getElementById('saveCode').value;
+    var codes = getSavedCodes();
+    codes.push(code);
+    saveCodes(codes);
+    document.getElementById('saveCode').value = ''; // 入力フィールドをクリア
+    showCodes(); // コードリストを更新
+}
+
+function showCodes() {
+    var codes = getSavedCodes();
+    var codeList = document.getElementById('codeList');
+    codeList.innerHTML = ''; // リストをクリア
+    codes.forEach(function(code, index) {
+        var li = document.createElement('li');
+        li.textContent = code;
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = '削除';
+        deleteButton.onclick = function() {
+            deleteCode(index);
+        };
+
+        li.appendChild(deleteButton);
+        codeList.appendChild(li);
+    });
+}
+
+function deleteCode(index) {
+    var codes = getSavedCodes();
+    codes.splice(index, 1);
+    saveCodes(codes);
+    showCodes(); // コードリストを更新
+}
+
+window.onload = showCodes; // ページ読み込み時にコードを表示
+
+    </script>
+</body>
+</html>
